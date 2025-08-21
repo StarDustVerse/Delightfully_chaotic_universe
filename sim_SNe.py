@@ -43,14 +43,14 @@ class ZoneLayerSupernova:
         for i in range(num_layers):
             color = self.zone_colors[i % len(self.zone_colors)]
             circle = patches.Circle(self.center, radius=self.base_radii[i],
-                                    facecolor=color, edgecolor='white', alpha=0.6)
+                                    facecolor=color, edgecolor='black', alpha=0.6)
             self.ax_zones.add_patch(circle)
             self.layers.append(circle)
 
-        self.ax_zones.set_title('Supernova Simulation', fontsize=30, color='white')
+        self.ax_zones.set_title('Supernova Simulation', fontsize=30, color='black')
         self.info_text = self.ax_zones.text(
             0.02, 0.98, '', transform=self.ax_zones.transAxes,
-            fontsize=9, color='white', verticalalignment='top'
+            fontsize=9, color='black', verticalalignment='top'
         )
 
         # Light curve setup
@@ -145,6 +145,7 @@ if st.button("▶️ Play Full Simulation"):
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
         time.sleep(0.12)
+
 
 
 

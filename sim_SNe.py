@@ -47,7 +47,7 @@ class ZoneLayerSupernova:
             self.ax_zones.add_patch(circle)
             self.layers.append(circle)
 
-        self.ax_zones.set_title('Supernova Simulation', fontsize=14, color='white')
+        self.ax_zones.set_title('Supernova Simulation', fontsize=30, color='white')
         self.info_text = self.ax_zones.text(
             0.02, 0.98, '', transform=self.ax_zones.transAxes,
             fontsize=9, color='white', verticalalignment='top'
@@ -57,9 +57,9 @@ class ZoneLayerSupernova:
         self.lc_times = []
         self.lc_mags = []
         self.lc_line, = self.ax_lc.plot([], [], color="lime", linewidth=2.5)
-        self.ax_lc.set_title("Light Curve", fontsize=12, color="black")
-        self.ax_lc.set_xlabel("Time (frames)", color="black")
-        self.ax_lc.set_ylabel("Brightness (arb. units)", color="black")
+        self.ax_lc.set_title("Light Curve", fontsize=30, color="black")
+        self.ax_lc.set_xlabel("Time (frames)", fontsize=25, color="black")
+        self.ax_lc.set_ylabel("Brightness (arb. units)", fontsize=25, color="black")
         self.ax_lc.set_facecolor("#111")
         self.ax_lc.tick_params(colors="black")
         for spine in self.ax_lc.spines.values():
@@ -117,8 +117,11 @@ class ZoneLayerSupernova:
 
         # Update info text
         info = f"Phase: {phase}\nFrame: {frame}\nLayers: {self.num_layers}"
-        self.info_text.set_text(info)
-
+    
+        self.info_text = self.ax_zones.text(
+            0.02, 0.98, '', transform=self.ax_zones.transAxes,
+            fontsize=12, color='white', verticalalignment='top'
+        )
         # Update light curve
         self.lc_times.append(frame)
         self.lc_mags.append(brightness)
@@ -142,6 +145,7 @@ if st.button("▶️ Play Full Simulation"):
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
         time.sleep(0.12)
+
 
 
 

@@ -5,7 +5,7 @@ import matplotlib.patches as patches
 import time
 
 class ZoneLayerSupernova:
-    def __init__(self, width=500, height=400, num_layers=5):
+    def __init__(self, width=600, height=500, num_layers=5):
         self.width = width
         self.height = height
         self.center = (width // 2, height // 2)
@@ -21,7 +21,7 @@ class ZoneLayerSupernova:
         self.base_radii = np.linspace(self.max_radius * 0.2, self.max_radius, num_layers)
 
         # Two-panel figure: left = zones, right = light curve
-        self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(1, 2, figsize=(10, 4))
+        self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(1, 2, figsize=(12, 5))
         
         # Zones setup
         self.ax_zones.set_xlim(0, width)
@@ -37,7 +37,7 @@ class ZoneLayerSupernova:
             self.ax_zones.add_patch(circle)
             self.layers.append(circle)
 
-        self.title = self.ax_zones.set_title('Supernova Simulation', fontsize=12, color='white')
+        self.title = self.ax_zones.set_title('Supernova Simulation', fontsize=14, color='white')
         self.info_text = self.ax_zones.text(
             0.02, 0.98, '', transform=self.ax_zones.transAxes,
             fontsize=9, color='white', verticalalignment='top'
@@ -46,10 +46,13 @@ class ZoneLayerSupernova:
         # Light curve setup
         self.lc_times = []
         self.lc_mags = []
-        self.lc_line, = self.ax_lc.plot([], [], color="cyan")
-        self.ax_lc.set_title("Light Curve")
+        self.lc_line, = self.ax_lc.plot([], [], color="lime", linewidth=2.5)  # neon green line
+        self.ax_lc.set_title("Light Curve", fontsize=12)
         self.ax_lc.set_xlabel("Time (frames)")
         self.ax_lc.set_ylabel("Brightness (arb. units)")
+        self.ax_lc.set_facecolor("#111")  # dark background
+        self.ax_lc.tick_params(colors="white")
+        self.ax_lc.spines[:].set_color("white")
         self.ax_lc.set_ylim(0, 1.2)
         self.ax_lc.set_xlim(0, 130)
 
@@ -70,13 +73,13 @@ class ZoneLayerSupernova:
             progress = 1 - (frame / self.core_collapse_time) * 0.7
             for i, circle in enumerate(self.layers):
                 circle.set_radius(self.base_radii[i] * progress)
-            brightness = 0.2 + 0.01 * frame  # slow rise
+            brightness = 0.2 + 0.01 * frame
 
         elif self.time < self.explosion_time:
             phase = "Critical Moment"
             for i, circle in enumerate(self.layers):
                 circle.set_radius(self.base_radii[i] * 0.3)
-            brightness = 0.5 + 0.02 * (frame - self.core_collapse_time)  # steeper rise
+            brightness = 0.5 + 0.02 * (frame - self.core_collapse_time)
 
         else:
             if not self.explosion_started:
@@ -90,7 +93,6 @@ class ZoneLayerSupernova:
                 radius = self.explosion_start_radii[i] * (1 + expansion_progress * (1 + i * 0.2))
                 circle.set_radius(radius)
                 circle.set_alpha(0.6 * fade)
-            # Bright peak then decay
             brightness = max(1.2 * np.exp(-(frame - self.explosion_time) / 40), 0.1)
 
         # Update info
@@ -114,7 +116,8 @@ if st.button("▶️ Play Full Simulation"):
     placeholder = st.empty()
     sim = ZoneLayerSupernova(num_layers=num_layers)
 
-    for frame in range(0, 131, 10):
+    # 131 frames total → ~15 sec if each frame sleeps ~0.12s
+    for frame in range(0, 131, 5):  
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
-        time.sleep(0.1)
+        time.sleep(0.12)  # slows down to ~15s total

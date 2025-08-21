@@ -23,7 +23,7 @@ class ZoneLayerSupernova:
         self.base_radii = np.linspace(self.max_radius * 0.2, self.max_radius, num_layers)
 
         # Two-panel figure
-        self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(1, 2, figsize=(13, 5))
+        self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(1, 2, figsize=(15, 8))
 
         # Zones setup
         self.ax_zones.set_xlim(0, width)
@@ -53,12 +53,16 @@ class ZoneLayerSupernova:
         self.ax_lc.set_xlabel("Time (frames)", color="white")
         self.ax_lc.set_ylabel("Brightness (arb. units)", color="white")
         self.ax_lc.set_facecolor("#111")
-        self.ax_lc.tick_params(colors="white")
+        self.ax_lc.tick_params(colors="black")
         for spine in self.ax_lc.spines.values():
-            spine.set_color("white")
+            spine.set_color("black")
+        self.ax_zones.tick_params(colors="black")
+        for spine in self.ax_zones.spines.values():
+            spine.set_color("black")
+
         self.ax_lc.set_ylim(0, 1.4 + num_layers*0.05)  # adjust ymax with layers
         self.ax_lc.set_xlim(0, 130)
-
+    
     def update_layers(self, frame):
         self.time = frame
 
@@ -129,3 +133,4 @@ if st.button("▶️ Play Full Simulation"):
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
         time.sleep(0.12)
+

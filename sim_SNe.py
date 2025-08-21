@@ -17,8 +17,8 @@ class ZoneLayerSupernova:
         self.explosion_started = False
 
         # High-contrast color
-        self.zone_colors = ["#E41A1C", "#377EB8", "#4DAF4A", 
-                    "#984EA3", "#FF7F00", "#A65628", "#F781BF", "#999999"]
+        self.zone_colors = ["#FDE725", "#7AD151", "#22A884", 
+                    "#2A788E", "#414487", "#440154"]
         self.base_radii = np.linspace(self.max_radius * 0.2, self.max_radius, num_layers)
 
         # Two-panel figure
@@ -134,6 +134,7 @@ if st.button("▶️ Play Full Simulation"):
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
         time.sleep(0.12)
+
 
 
 

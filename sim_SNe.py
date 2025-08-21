@@ -38,6 +38,8 @@ class ZoneLayerSupernova:
         self.ax_zones.set_ylim(0, height)
         self.ax_zones.set_aspect('equal')
         self.ax_zones.set_facecolor('black')
+        self.ax_zones.set_xlabel("X Position (arb. units)", color="black")
+        self.ax_zones.set_ylabel("Y Position (arb. units)", color="black")
 
         self.layers = []
         for i in range(num_layers):
@@ -142,6 +144,7 @@ if st.button("▶️ Play Full Simulation"):
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
         time.sleep(0.12)
+
 
 
 

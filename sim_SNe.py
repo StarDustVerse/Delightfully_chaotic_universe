@@ -49,9 +49,9 @@ class ZoneLayerSupernova:
         self.lc_times = []
         self.lc_mags = []
         self.lc_line, = self.ax_lc.plot([], [], color="lime", linewidth=2.5)
-        self.ax_lc.set_title("Light Curve", fontsize=12, color="white")
-        self.ax_lc.set_xlabel("Time (frames)", color="white")
-        self.ax_lc.set_ylabel("Brightness (arb. units)", color="white")
+        self.ax_lc.set_title("Light Curve", fontsize=12, color="black")
+        self.ax_lc.set_xlabel("Time (frames)", color="black")
+        self.ax_lc.set_ylabel("Brightness (arb. units)", color="black")
         self.ax_lc.set_facecolor("#111")
         self.ax_lc.tick_params(colors="black")
         for spine in self.ax_lc.spines.values():
@@ -62,6 +62,7 @@ class ZoneLayerSupernova:
 
         self.ax_lc.set_ylim(0, 1.4 + num_layers*0.05)  # adjust ymax with layers
         self.ax_lc.set_xlim(0, 130)
+        
     
     def update_layers(self, frame):
         self.time = frame
@@ -133,4 +134,5 @@ if st.button("▶️ Play Full Simulation"):
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
         time.sleep(0.12)
+
 

@@ -50,9 +50,10 @@ class ZoneLayerSupernova:
         self.ax_zones.set_title('Supernova Simulation', fontsize=30, color='black')
         self.info_text = self.ax_zones.text(
             0.02, 0.98, '', transform=self.ax_zones.transAxes,
-            fontsize=9, color='black', verticalalignment='top'
+            fontsize=9, color='white', verticalalignment='top'
         )
 
+        
         # Light curve setup
         self.lc_times = []
         self.lc_mags = []
@@ -117,11 +118,7 @@ class ZoneLayerSupernova:
 
         # Update info text
         info = f"Phase: {phase}\nFrame: {frame}\nLayers: {self.num_layers}"
-    
-        self.info_text = self.ax_zones.text(
-            0.02, 0.98, '', transform=self.ax_zones.transAxes,
-            fontsize=12, color='white', verticalalignment='top'
-        )
+        self.info_text.set_text(info)
         # Update light curve
         self.lc_times.append(frame)
         self.lc_mags.append(brightness)
@@ -145,6 +142,7 @@ if st.button("▶️ Play Full Simulation"):
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
         time.sleep(0.12)
+
 
 
 

@@ -23,7 +23,8 @@ class ZoneLayerSupernova:
         self.base_radii = np.linspace(self.max_radius * 0.2, self.max_radius, num_layers)
 
         # Two-panel figure
-        self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(1, 2, figsize=(15, 8))
+        self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(1, 2, figsize=(18, 9))
+    
 
         # Zones setup
         self.ax_zones.set_xlim(0, width)
@@ -134,5 +135,6 @@ if st.button("▶️ Play Full Simulation"):
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
         time.sleep(0.12)
+
 
 

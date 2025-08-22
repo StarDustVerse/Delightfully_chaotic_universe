@@ -211,7 +211,7 @@ class ZoneLayerSupernova:
         info = (f"{phase}\n"
         f"Frame: {frame}/{TOTAL_FRAMES}\n"
         f"Layers: {self.num_layers}\n"
-        f"Luminosity: {brightness:.2f} × 10⁹ $L_\odot$")
+        f"Luminosity: {brightness/1e9:.2f} × 10⁹ $L_\odot$")
         self.info_text.set_text(info)
 
         return self.fig
@@ -266,6 +266,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

@@ -49,7 +49,7 @@ class ZoneLayerSupernova:
 
         # Figure: big sim + smaller light curve
         self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(
-            1, 2, figsize=(32, 24), gridspec_kw={'width_ratios': [3, 0.6]}
+            2,1, figsize=(32, 24), gridspec_kw={'width_ratios': [3, 1]}
         )
 
         # Zones plot (white bg so all colors read cleanly)
@@ -91,7 +91,8 @@ class ZoneLayerSupernova:
         (self.lc_line,) = self.ax_lc.plot([], [], linewidth=3)
         self.ax_lc.set_title("Light Curve", fontsize=25, color="black")
         self.ax_lc.set_xlabel("Time (frames)", fontsize=25, color="black")
-        self.ax_lc.set_ylabel("Brightness", fontsize=25, color="black", rotation=90)
+        self.ax_lc.set_ylabel("Brightness", fontsize=25, color="black")
+
         self.ax_lc.set_facecolor("#eee")
         self.ax_lc.tick_params(colors="black", labelsize=25)
         for spine in self.ax_lc.spines.values():
@@ -174,7 +175,7 @@ class ZoneLayerSupernova:
         return self.fig
 
 # --- Streamlit App ---
-st.set_page_config(layout="wide", page_title="💥 Supernova Simulator (Shell Velocities + Plateau LC)")
+st.set_page_config(layout="wide", page_title="💥 Supernova Simulator")
 
 # Minimal CSS
 st.markdown("""
@@ -187,8 +188,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("# Core-Collapse Supernova (Toy Physics)")
-st.markdown("### Per-shell velocities + plateau light curve (homologous-ish expansion)")
+st.markdown("# Core-Collapse Supernova")
 
 col1, col2 = st.columns([1, 3])
 
@@ -221,7 +221,6 @@ with col2:
                 placeholder.pyplot(sim.fig, use_container_width=True, clear_figure=False)
                 progress_bar.progress(frame / TOTAL_FRAMES)
                 #time.sleep(ANIMATION_SPEED)
-        
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
@@ -233,6 +232,7 @@ st.markdown("""
 - **Plateau light curve:** flat luminosity for ~80 days (sim time), smoothly blending into an exponential radioactive tail.
 - **Shock breakout bump:** a tiny spike at explosion time for flavor.
 """)
+
 
 
 

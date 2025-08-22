@@ -408,7 +408,7 @@ with tab4:
         st.subheader("Feature Correlation Matrix")
         correlation_matrix = np.corrcoef(X.T)
         
-        fig, ax = plt.subplots(figsize=(4, 3))
+        fig, ax = plt.subplots(figsize=(8, 6))
         sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', center=0,
                    xticklabels=feature_names, yticklabels=feature_names, ax=ax)
         ax.set_title('Feature Correlation Matrix')

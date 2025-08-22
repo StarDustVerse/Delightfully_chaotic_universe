@@ -85,11 +85,11 @@ class ZoneLayerSupernova:
             self.layers[i] = circle
 
         # Info box
-        #self.info_text = self.ax_zones.text(
-        #    0.02, 0.98, '', transform=self.ax_zones.transAxes,
-        #    fontsize=8, color='white', verticalalignment='top',
-        #    bbox=dict(boxstyle="round,pad=0.3", facecolor="black", alpha=0.8)
-        #)
+        self.info_text = self.ax_zones.text(
+            0.02, 0.98, '', transform=self.ax_zones.transAxes,
+            fontsize=8, color='white', verticalalignment='top',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="black", alpha=0.8)
+        )
         info_placeholder = st.sidebar.empty()
         
         info = (f"{phase}\n"
@@ -273,6 +273,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

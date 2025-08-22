@@ -59,7 +59,7 @@ class ZoneLayerSupernova:
         self.ax_zones.set_xlim(0, width)
         self.ax_zones.set_ylim(0, height)
         self.ax_zones.set_aspect('equal')
-        self.ax_zones.set_facecolor('white')
+        self.ax_zones.set_facecolor('black')
         self.ax_zones.set_xlabel("X Position (arb. units)", color="black", fontsize=8)
         self.ax_zones.set_ylabel("Y Position (arb. units)", color="black", fontsize=8)
         self.ax_zones.tick_params(colors="black", labelsize=6)
@@ -84,8 +84,8 @@ class ZoneLayerSupernova:
         # Info box
         self.info_text = self.ax_zones.text(
             0.02, 0.98, '', transform=self.ax_zones.transAxes,
-            fontsize=8, color='black', verticalalignment='top',
-            bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8)
+            fontsize=8, color='green', verticalalignment='top',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="black", alpha=0.8)
         )
 
         # --- Horizontal Light Curve setup ---
@@ -99,7 +99,7 @@ class ZoneLayerSupernova:
         self.ax_lc.tick_params(colors="black", labelsize=6)
         for spine in self.ax_lc.spines.values():
             spine.set_color("black")
-        #self.ax_lc.set_ylim(1,10)
+        self.ax_lc.set_ylim(0, 1.5 * LP_PHYS) 
         self.ax_lc.set_yscale('log')
 
         self.ax_lc.set_xlim(0, TOTAL_FRAMES)
@@ -230,6 +230,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

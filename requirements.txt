@@ -5,3 +5,5 @@ streamlit
 scipy
 astropy
 matplotlib
+seaborn
+scikit-learn

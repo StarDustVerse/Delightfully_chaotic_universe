@@ -15,6 +15,9 @@ TAIL_TAU = 111.3           # Co decay timescale (days)
 NI_SCALE = 0.6             # scales tail brightness (proxy for M_Ni)
 ANIMATION_SPEED = 0.02     # seconds per frame (fixed)
 skip = 4
+L_SOLAR = 3.828e26  # W, just for reference
+LP_PHYS = 1e9        # plateau ~10^9 L_sun
+
 class ZoneLayerSupernova:
     """
     
@@ -103,20 +106,21 @@ class ZoneLayerSupernova:
 
     # --- Light curve: plateau + radioactive tail (smooth blend) ---
     def plateau_lightcurve(self, t_days):
-        Lp = 1.5  # normalized plateau level
-        tp = PLATEAU_DAYS
-
-        # Tail ~ exp(-(t - tp)/tau), scaled by NI_SCALE; zero before tp
-        tail_raw = NI_SCALE * np.exp(-np.maximum(0.0, t_days - tp) / TAIL_TAU)
-
-        # Smooth blend around tp using a logistic
-        blend = 1.0 / (1.0 + np.exp(-(t_days - tp) / 5.0))
+        # Plateau luminosity (physical)
+        Lp = LP_PHYS  # in L_sun units
+        
+        # Tail: Co decay scaled by NI_SCALE
+        tail_raw = Lp * NI_SCALE * np.exp(-np.maximum(0.0, t_days - PLATEAU_DAYS) / TAIL_TAU)
+        
+        # Smooth blend around plateau → tail
+        blend = 1.0 / (1.0 + np.exp(-(t_days - PLATEAU_DAYS) / 5.0))
         L = (1 - blend) * Lp + blend * tail_raw
-
-        # Add a small shock breakout spike at explosion (narrow Gaussian)
+        
+        # Shock breakout spike (small fraction)
         t0 = self.explosion_frame * DT_DAYS
-        spike = 0.3 * np.exp(-0.5 * ((t_days - t0) / 2.0) ** 2)
-        return np.maximum(0.0, L + spike)
+        spike = 0.1 * Lp * np.exp(-0.5 * ((t_days - t0) / 2.0) ** 2)
+        
+        return np.maximum(0.0, L)
 
     def update_layers(self, frame):
         self.time_frame = frame
@@ -224,6 +228,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

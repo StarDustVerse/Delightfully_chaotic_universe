@@ -22,7 +22,7 @@ class ZoneLayerSupernova:
       - At explosion: shells expand with per-layer velocities (outer faster).
       - Light curve: flat-ish Popov plateau blended to Co-decay tail.
     """
-    def __init__(self, width=1200, height=1000, num_layers=5):
+    def __init__(self, width=1200, height=550, num_layers=5):
         self.width = width
         self.height = height
         self.center = (width // 2, height // 2)
@@ -224,15 +224,6 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
-
-st.markdown("---")
-st.markdown("""
-**What changed (physics-wise):**
-- **Homologous-ish expansion:** each shell has its own velocity so outer layers outrun inner ones.
-- **Plateau light curve:** flat luminosity for ~80 days (sim time), smoothly blending into an exponential radioactive tail.
-- **Shock breakout bump:** a tiny spike at explosion time for flavor.
-""")
-
 
 
 

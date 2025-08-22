@@ -48,7 +48,7 @@ class ZoneLayerSupernova:
 
         # --- Figure: supernova + horizontal light curve ---
         self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(
-            2, 1, figsize=(8, 3),  # 2 rows, 1 column
+            2, 1, figsize=(15, 6),  # 2 rows, 1 column
             gridspec_kw={'height_ratios': [3, 1], 'hspace': 0.3}  # top bigger
         )
 
@@ -59,7 +59,7 @@ class ZoneLayerSupernova:
         self.ax_zones.set_facecolor('white')
         self.ax_zones.set_xlabel("X Position (arb. units)", color="black", fontsize=8)
         self.ax_zones.set_ylabel("Y Position (arb. units)", color="black", fontsize=8)
-        self.ax_zones.tick_params(colors="black", labelsize=20)
+        self.ax_zones.tick_params(colors="black", labelsize=6)
         for spine in self.ax_zones.spines.values():
             spine.set_color("black")
         self.ax_zones.set_title('💥 Supernova Explosion Simulation', fontsize=10, color='black', pad=15)
@@ -93,7 +93,7 @@ class ZoneLayerSupernova:
         self.ax_lc.set_xlabel("Time (frames)", fontsize=8, color="black")
         self.ax_lc.set_ylabel("Brightness", fontsize=8, color="black")
         self.ax_lc.set_facecolor("#eee")
-        self.ax_lc.tick_params(colors="black", labelsize=16)
+        self.ax_lc.tick_params(colors="black", labelsize=6)
         for spine in self.ax_lc.spines.values():
             spine.set_color("black")
         self.ax_lc.set_ylim(0, 1.4 + num_layers * 0.05)
@@ -224,6 +224,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

@@ -90,8 +90,8 @@ class ZoneLayerSupernova:
             fontsize=8, color='white', verticalalignment='top',
             bbox=dict(boxstyle="round,pad=0.3", facecolor="black", alpha=0.8)
         )
-        
-        self.info_placeholder = st.sidebar.empty()
+
+        #self.info_placeholder = st.sidebar.empty()
         # --- Horizontal Light Curve setup ---
         self.lc_times = []
         self.lc_vals = []
@@ -209,17 +209,13 @@ class ZoneLayerSupernova:
 
 
         # Info box
-        info = (f"{phase}\n"
-        f"Frame: {frame}/{TOTAL_FRAMES}\n"
-        f"Layers: {self.num_layers}\n"
-        f"Luminosity: {brightness/1e9:.2f} × 10⁹ $L_\odot$")
-        
+        self.info_text.set_text(
+            f"{phase}\n"
+            f"Frame: {frame}/{TOTAL_FRAMES}\n"
+            f"Layers: {self.num_layers}\n"
+            f"Luminosity: {brightness/1e9:.2f} × 10⁹ $L_\odot$"
+        )
     
-        self.info_placeholder.markdown(f"```\n{info}\n```")
-
-
-
-        return self.fig
 
 # --- Streamlit App ---
 st.set_page_config(layout="wide", page_title="💥 Supernova Simulator")
@@ -271,6 +267,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

@@ -14,7 +14,7 @@ PLATEAU_DAYS = 80.0        # plateau duration in days
 TAIL_TAU = 111.3           # Co decay timescale (days)
 NI_SCALE = 0.6             # scales tail brightness (proxy for M_Ni)
 ANIMATION_SPEED = 0.02     # seconds per frame (fixed)
-
+skip = 5
 class ZoneLayerSupernova:
     """
     Slightly-more-physical toy model:
@@ -132,14 +132,14 @@ class ZoneLayerSupernova:
 
         # Pre-explosion: gentle collapse (shrink radii a bit)
         if frame < self.core_collapse_time:
-            phase = "🔴 Core Collapse"
+            phase = "Core Collapse"
             progress = 1.0 - 0.6 * (frame / self.core_collapse_time)
             for i, c in enumerate(self.layers):
                 c.set_radius(self.base_radii[i] * progress)
 
         # Between collapse end and explosion: small pulse
         elif frame < self.explosion_frame:
-            phase = "⚡ Critical Moment"
+            phase = "Critical Moment"
             pulse = 0.95 + 0.05 * np.sin(0.3 * frame)
             for i, c in enumerate(self.layers):
                 c.set_radius(self.base_radii[i] * 0.35 * pulse)
@@ -151,7 +151,7 @@ class ZoneLayerSupernova:
                 self.radii_at_blast = np.array([c.get_radius() for c in self.layers])
                 self.t_blast_days = frame * DT_DAYS
 
-            phase = "💥 Supernova Explosion!"
+            phase = "Supernova Explosion!"
             dt_days = max(0.0, t_days - self.t_blast_days)
             # r_i(t) = r_i(t0) + v_i * dt
             new_r = self.radii_at_blast + self.v_pix_per_day * dt_days
@@ -187,7 +187,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("# 💥 Core-Collapse Supernova (Toy Physics)")
+st.markdown("# Core-Collapse Supernova (Toy Physics)")
 st.markdown("### Per-shell velocities + plateau light curve (homologous-ish expansion)")
 
 col1, col2 = st.columns([1, 3])
@@ -204,11 +204,22 @@ with col2:
         sim = ZoneLayerSupernova(num_layers=num_layers)
         progress_bar = st.progress(0)
 
+        #for frame in range(TOTAL_FRAMES + 1):
+        #    sim.update_layers(frame)
+        #    placeholder.pyplot(sim.fig, use_container_width=True)
+        #    progress_bar.progress(frame / TOTAL_FRAMES)
+        #    time.sleep(ANIMATION_SPEED)
+
+                
         for frame in range(TOTAL_FRAMES + 1):
             sim.update_layers(frame)
-            placeholder.pyplot(sim.fig, use_container_width=True)
-            progress_bar.progress(frame / TOTAL_FRAMES)
-            time.sleep(ANIMATION_SPEED)
+            
+            # only render occasionally
+            if frame % skip == 0:
+                placeholder.pyplot(sim.fig, use_container_width=True)
+                progress_bar.progress(frame / TOTAL_FRAMES)
+                time.sleep(ANIMATION_SPEED)
+        
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
@@ -220,3 +231,4 @@ st.markdown("""
 - **Plateau light curve:** flat luminosity for ~80 days (sim time), smoothly blending into an exponential radioactive tail.
 - **Shock breakout bump:** a tiny spike at explosion time for flavor.
 """)
+

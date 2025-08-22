@@ -90,8 +90,8 @@ class ZoneLayerSupernova:
             fontsize=8, color='white', verticalalignment='top',
             bbox=dict(boxstyle="round,pad=0.3", facecolor="black", alpha=0.8)
         )
-        info_placeholder = st.sidebar.empty()
         
+        self.info_placeholder = st.sidebar.empty()
         # --- Horizontal Light Curve setup ---
         self.lc_times = []
         self.lc_vals = []
@@ -214,7 +214,8 @@ class ZoneLayerSupernova:
         f"Layers: {self.num_layers}\n"
         f"Luminosity: {brightness/1e9:.2f} × 10⁹ $L_\odot$")
         
-        info_placeholder.markdown(f"```\n{info}\n```")
+    
+        self.info_placeholder.markdown(f"```\n{info}\n```")
 
 
 
@@ -270,6 +271,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

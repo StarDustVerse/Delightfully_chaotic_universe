@@ -346,7 +346,7 @@ with tab4:
         
         fig_3d = px.scatter_3d(df_viz, x='Brightness', y='Roundness', z='Size',
                               color='Object Type', title='3D Feature Space',
-                              color_discrete_sequence=['#FF6B6B', '#4ECDC4', '#45B7D1'])
+                              color_discrete_sequence=['green', 'red', 'blue'])
         st.plotly_chart(fig_3d, use_container_width=True)
     
     else:

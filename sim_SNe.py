@@ -4,204 +4,219 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import time
 
+# ------------------------
+# Config / defaults
+# ------------------------
+TOTAL_FRAMES = 130
+DT_DAYS = 0.5              # "sim days" per frame (visual scale)
+EXPLOSION_FRAME = 50       # frame when expansion begins
+PLATEAU_DAYS = 80.0        # plateau duration in days
+TAIL_TAU = 111.3           # Co decay timescale (days)
+NI_SCALE = 0.6             # scales tail brightness (proxy for M_Ni)
+ANIMATION_SPEED = 0.02     # seconds per frame (fixed)
+
 class ZoneLayerSupernova:
+    """
+    Slightly-more-physical toy model:
+      - Before explosion: gentle core-collapse shrink.
+      - At explosion: shells expand with per-layer velocities (outer faster).
+      - Light curve: flat-ish Popov plateau blended to Co-decay tail.
+    """
     def __init__(self, width=1200, height=1000, num_layers=5):
         self.width = width
         self.height = height
         self.center = (width // 2, height // 2)
         self.num_layers = num_layers
-        self.time = 0
-        self.explosion_time = 50
+        self.time_frame = 0
+        self.explosion_frame = EXPLOSION_FRAME
         self.core_collapse_time = 30
         self.max_radius = min(width, height) // 2.5
         self.explosion_started = False
 
-        # High-contrast color
-        self.zone_colors = [
-            'red',
-            'blue',
-            'green',
-            'purple',
-            'orange',
-            'brown',
-            'pink',
-            'gray'
-        ]
-        self.base_radii = np.linspace(self.max_radius * 0.2, self.max_radius, num_layers)
+        # Colors in order
+        self.zone_colors = ['red','blue','green','purple','brown','pink','gray','teal','navy','gold']
+        self.zone_colors = self.zone_colors[:num_layers]
 
-        # Two-panel figure with custom width ratios - sim bigger, light curve smaller
-        self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(1, 2, figsize=(40, 30), 
-                                                              gridspec_kw={'width_ratios': [3, 1]})
-    
+        # Base radii (inner → outer)
+        self.base_radii = np.linspace(self.max_radius * 0.25, self.max_radius, num_layers)
 
-        # Zones setup
+        # Per-shell expansion velocities in "pixels per day"
+        # Outer shells are faster; scale so they visibly expand across the canvas over ~plateau timescale
+        v0 = self.max_radius / (PLATEAU_DAYS * 0.8)  # base pixels/day
+        idx = np.arange(num_layers)                   # 0..N-1
+        scale = 0.6 + 0.6 * (idx / max(1, num_layers - 1))  # 0.6..1.2
+        self.v_pix_per_day = v0 * scale
+
+        # Figure: big sim + smaller light curve
+        self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(
+            1, 2, figsize=(32, 24), gridspec_kw={'width_ratios': [3, 0.6]}
+        )
+
+        # Zones plot (white bg so all colors read cleanly)
         self.ax_zones.set_xlim(0, width)
         self.ax_zones.set_ylim(0, height)
         self.ax_zones.set_aspect('equal')
-        self.ax_zones.set_facecolor('black')
+        self.ax_zones.set_facecolor('white')
         self.ax_zones.set_xlabel("X Position (arb. units)", color="black", fontsize=25)
         self.ax_zones.set_ylabel("Y Position (arb. units)", color="black", fontsize=25)
-
-        self.layers = []
-        for i in range(num_layers):
-            color = self.zone_colors[i % len(self.zone_colors)]
-            circle = patches.Circle(self.center, radius=self.base_radii[i],
-                                    facecolor=color, edgecolor='black', alpha=0.6, linewidth=2)
-            self.ax_zones.add_patch(circle)
-            self.layers.append(circle)
-
-        self.ax_zones.set_title('💥 Supernova Explosion Simulation', fontsize=35, color='white', pad=20)
-        self.info_text = self.ax_zones.text(
-            0.02, 0.98, '', transform=self.ax_zones.transAxes,
-            fontsize=25, color='white', verticalalignment='top',
-            bbox=dict(boxstyle="round,pad=0.3", facecolor="black", alpha=0.7)
-        )
-
-        
-        # Light curve setup
-        self.lc_times = []
-        self.lc_mags = []
-        self.lc_line, = self.ax_lc.plot([], [], color="lime", linewidth=3)
-        self.ax_lc.set_title("Light Curve", fontsize=28, color="black")
-        self.ax_lc.set_xlabel("Time (frames)", fontsize=25, color="black")
-        self.ax_lc.set_ylabel("Brightness", fontsize=25, color="black")
-        self.ax_lc.set_facecolor("#111")
-        self.ax_lc.tick_params(colors="black", labelsize=25)
-        for spine in self.ax_lc.spines.values():
-            spine.set_color("black")
         self.ax_zones.tick_params(colors="black", labelsize=25)
         for spine in self.ax_zones.spines.values():
             spine.set_color("black")
+        self.ax_zones.set_title('💥 Supernova Explosion Simulation', fontsize=35, color='black', pad=20)
 
-        self.ax_lc.set_ylim(0, 1.4 + num_layers*0.05)  # adjust ymax with layers
-        self.ax_lc.set_xlim(0, 130)
-        self.ax_lc.grid(True, alpha=0.3, color='gray')
-        
-    
+        # Draw outer → inner so smaller shells are visible
+        self.layers = [None] * num_layers
+        for i in reversed(range(num_layers)):
+            circle = patches.Circle(
+                self.center,
+                radius=self.base_radii[i],
+                facecolor=self.zone_colors[i],
+                edgecolor='black',
+                linewidth=2,
+                alpha=1.0
+            )
+            self.ax_zones.add_patch(circle)
+            self.layers[i] = circle
+
+        # Info box
+        self.info_text = self.ax_zones.text(
+            0.02, 0.98, '', transform=self.ax_zones.transAxes,
+            fontsize=22, color='black', verticalalignment='top',
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8)
+        )
+
+        # Light curve setup
+        self.lc_times = []
+        self.lc_vals = []
+        (self.lc_line,) = self.ax_lc.plot([], [], linewidth=3)
+        self.ax_lc.set_title("Light Curve", fontsize=25, color="black")
+        self.ax_lc.set_xlabel("Time (frames)", fontsize=25, color="black")
+        self.ax_lc.set_ylabel("Brightness", fontsize=25, color="black", rotation=90)
+        self.ax_lc.set_facecolor("#eee")
+        self.ax_lc.tick_params(colors="black", labelsize=25)
+        for spine in self.ax_lc.spines.values():
+            spine.set_color("black")
+        self.ax_lc.set_ylim(0, 1.4 + num_layers * 0.05)
+        self.ax_lc.set_xlim(0, TOTAL_FRAMES)
+        self.ax_lc.grid(True, alpha=0.3)
+
+    # --- Light curve: plateau + radioactive tail (smooth blend) ---
+    def plateau_lightcurve(self, t_days):
+        Lp = 1.0  # normalized plateau level
+        tp = PLATEAU_DAYS
+
+        # Tail ~ exp(-(t - tp)/tau), scaled by NI_SCALE; zero before tp
+        tail_raw = NI_SCALE * np.exp(-np.maximum(0.0, t_days - tp) / TAIL_TAU)
+
+        # Smooth blend around tp using a logistic
+        blend = 1.0 / (1.0 + np.exp(-(t_days - tp) / 5.0))
+        L = (1 - blend) * Lp + blend * tail_raw
+
+        # Add a small shock breakout spike at explosion (narrow Gaussian)
+        t0 = self.explosion_frame * DT_DAYS
+        spike = 0.3 * np.exp(-0.5 * ((t_days - t0) / 2.0) ** 2)
+        return np.maximum(0.0, L + spike)
+
     def update_layers(self, frame):
-        self.time = frame
+        self.time_frame = frame
+        t_days = frame * DT_DAYS
 
         # Reset
         if frame == 0:
             self.explosion_started = False
-            self.lc_times, self.lc_mags = [], []
-            for i, circle in enumerate(self.layers):
-                circle.set_radius(self.base_radii[i])
-                circle.set_alpha(0.6)
-                circle.set_facecolor(self.zone_colors[i % len(self.zone_colors)])
+            self.lc_times, self.lc_vals = [], []
+            for i, c in enumerate(self.layers):
+                c.set_radius(self.base_radii[i])
+                c.set_facecolor(self.zone_colors[i])
+                c.set_alpha(1.0)
 
-        # Brightness scaling with number of layers
-        peak_scale = 0.2 + 0.1 * self.num_layers  
+        # Pre-explosion: gentle collapse (shrink radii a bit)
+        if frame < self.core_collapse_time:
+            phase = "🔴 Core Collapse"
+            progress = 1.0 - 0.6 * (frame / self.core_collapse_time)
+            for i, c in enumerate(self.layers):
+                c.set_radius(self.base_radii[i] * progress)
 
-        # Phases
-        if self.time < self.core_collapse_time:
-            phase = "Core Collapse"
-            progress = 1 - (frame / self.core_collapse_time) * 0.7
-            for i, circle in enumerate(self.layers):
-                circle.set_radius(self.base_radii[i] * progress)
-            brightness = (0.1 + 0.01 * frame) * peak_scale
+        # Between collapse end and explosion: small pulse
+        elif frame < self.explosion_frame:
+            phase = "⚡ Critical Moment"
+            pulse = 0.95 + 0.05 * np.sin(0.3 * frame)
+            for i, c in enumerate(self.layers):
+                c.set_radius(self.base_radii[i] * 0.35 * pulse)
 
-        elif self.time < self.explosion_time:
-            phase = "Critical Moment"
-            for i, circle in enumerate(self.layers):
-                circle.set_radius(self.base_radii[i] * 0.3)
-                # Add pulsing effect
-                pulse = 0.5 + 0.5 * np.sin(frame * 0.5)
-                circle.set_alpha(0.6 * pulse)
-            brightness = (0.4 + 0.02 * (frame - self.core_collapse_time)) * peak_scale
-
+        # Post-explosion: homologous-ish expansion with per-shell velocities
         else:
             if not self.explosion_started:
                 self.explosion_started = True
-                self.explosion_start_radii = [c.get_radius() for c in self.layers]
+                self.radii_at_blast = np.array([c.get_radius() for c in self.layers])
+                self.t_blast_days = frame * DT_DAYS
 
-            phase = "Supernova Explosion!"
-            expansion_progress = min((frame - self.explosion_time) / 60, 1.5)
-            fade = max(0, 1.2 - expansion_progress)
-            for i, circle in enumerate(self.layers):
-                radius = self.explosion_start_radii[i] * (1 + expansion_progress * (1 + i * 0.2))
-                circle.set_radius(radius)
-                circle.set_alpha(fade)
-                # Color shift during explosion
-                #if expansion_progress > 0.5:
-                #    circle.set_facecolor('yellow')
-                #elif expansion_progress > 0.2:
-                #    circle.set_facecolor('orange')
-            brightness = max(1.2 * np.exp(-(frame - self.explosion_time) / 40), 0.05) * peak_scale
+            phase = "💥 Supernova Explosion!"
+            dt_days = max(0.0, t_days - self.t_blast_days)
+            # r_i(t) = r_i(t0) + v_i * dt
+            new_r = self.radii_at_blast + self.v_pix_per_day * dt_days
+            for i, c in enumerate(self.layers):
+                c.set_radius(new_r[i])
+                # Optional fading over very late times so it doesn't just fill the canvas
+                fade = 1.0 - 0.4 * (dt_days / (PLATEAU_DAYS * 1.5))
+                c.set_alpha(max(0.4, min(1.0, fade)))
 
-        # Update info text with better formatting
-        info = f"{phase}\nFrame: {frame}/{130}\nLayers: {self.num_layers}\nBrightness: {brightness:.3f}"
-        self.info_text.set_text(info)
-        
-        # Update light curve
+        # Light curve update
+        brightness = self.plateau_lightcurve(t_days)
         self.lc_times.append(frame)
-        self.lc_mags.append(brightness)
-        self.lc_line.set_data(self.lc_times, self.lc_mags)
+        self.lc_vals.append(brightness)
+        self.lc_line.set_data(self.lc_times, self.lc_vals)
+
+        # Info box
+        info = f"{phase}\nFrame: {frame}/{TOTAL_FRAMES}\nLayers: {self.num_layers}\nBrightness: {brightness:.3f}"
+        self.info_text.set_text(info)
 
         return self.fig
 
-
 # --- Streamlit App ---
-st.set_page_config(layout="wide", page_title="💥 Supernova Simulator")
+st.set_page_config(layout="wide", page_title="💥 Supernova Simulator (Shell Velocities + Plateau LC)")
 
-# Custom CSS for dark theme
+# Minimal CSS
 st.markdown("""
 <style>
-.main {
-    background-color: #0e1117;
-}
+.main { background-color: #0e1117; }
 .stButton > button {
-    background-color: #ff4b4b;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 1.2rem;
+    background-color: #ff4b4b; color: white; border: none;
+    padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 1.2rem;
 }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("# 💥 Core Collapse Supernova Simulation")
-st.markdown("### Watch a massive star explode in real-time with dynamic light curve analysis")
+st.markdown("# 💥 Core-Collapse Supernova (Toy Physics)")
+st.markdown("### Per-shell velocities + plateau light curve (homologous-ish expansion)")
 
 col1, col2 = st.columns([1, 3])
 
 with col1:
-    num_layers = st.slider("Number of Stellar Layers", 2, 10, 5, 
-                          help="More layers = more complex explosion dynamics")
-    
-    st.markdown("**Simulation Phases:**")
-    st.markdown("**Core Collapse**")
-    st.markdown("**Critical Moment**")  
-    st.markdown("**Explosion**")
+    num_layers = st.slider("Number of Stellar Layers", 2, 10, 6,
+                           help="Outer shells expand faster; all plotted outer→inner.")
+    st.markdown("**Phases:**")
+    st.markdown("🔴 Core Collapse → ⚡ Critical → 💥 Explosion → Plateau → Radioactive tail")
 
 with col2:
     if st.button("▶️ Play Full Simulation", type="primary"):
         placeholder = st.empty()
         sim = ZoneLayerSupernova(num_layers=num_layers)
-        
         progress_bar = st.progress(0)
-        
-        # Run simulation with progress tracking
-        total_frames = 130
-        animation_speed = 0.02 
-            
-        for frame in range(total_frames + 1):
+
+        for frame in range(TOTAL_FRAMES + 1):
             sim.update_layers(frame)
             placeholder.pyplot(sim.fig, use_container_width=True)
-            progress_bar.progress(frame / total_frames)
-            time.sleep(animation_speed)
-        
+            progress_bar.progress(frame / TOTAL_FRAMES)
+            time.sleep(ANIMATION_SPEED)
+
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
-        
+
 st.markdown("---")
 st.markdown("""
-**About this simulation:**
-- Models the core collapse and explosion of a massive star (>8 solar masses)
-- Each colored layer represents different stellar material zones
-- The light curve shows how brightness changes over time during the explosion
+**What changed (physics-wise):**
+- **Homologous-ish expansion:** each shell has its own velocity so outer layers outrun inner ones.
+- **Plateau light curve:** flat luminosity for ~80 days (sim time), smoothly blending into an exponential radioactive tail.
+- **Shock breakout bump:** a tiny spike at explosion time for flavor.
 """)
-
-
-

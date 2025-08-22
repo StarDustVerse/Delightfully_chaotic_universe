@@ -5,7 +5,7 @@ import matplotlib.patches as patches
 import time
 
 class ZoneLayerSupernova:
-    def __init__(self, width=900, height=750, num_layers=5):
+    def __init__(self, width=1200, height=1000, num_layers=5):
         self.width = width
         self.height = height
         self.center = (width // 2, height // 2)
@@ -144,6 +144,7 @@ if st.button("▶️ Play Full Simulation"):
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
         time.sleep(0.12)
+
 
 
 

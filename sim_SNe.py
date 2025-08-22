@@ -170,11 +170,6 @@ with col1:
     num_layers = st.slider("Number of Stellar Layers", 2, 10, 5, 
                           help="More layers = more complex explosion dynamics")
     
-    speed = st.select_slider("Animation Speed", 
-                           options=[0.2, 0.15, 0.12, 0.08, 0.05],
-                           value=0.12,
-                           format_func=lambda x: f"{x:.2f}s per frame")
-    
     st.markdown("**Simulation Phases:**")
     st.markdown("**Core Collapse**")
     st.markdown("**Critical Moment**")  
@@ -189,15 +184,17 @@ with col2:
         
         # Run simulation with progress tracking
         total_frames = 130
-        for frame in range(0, total_frames + 1, 5):
+        animation_speed = 0.02 
+            
+        for frame in range(total_frames + 1):
             sim.update_layers(frame)
             placeholder.pyplot(sim.fig, use_container_width=True)
             progress_bar.progress(frame / total_frames)
-            time.sleep(speed)
+            time.sleep(animation_speed)
         
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
-
+        
 st.markdown("---")
 st.markdown("""
 **About this simulation:**
@@ -205,4 +202,5 @@ st.markdown("""
 - Each colored layer represents different stellar material zones
 - The light curve shows how brightness changes over time during the explosion
 """)
+
 

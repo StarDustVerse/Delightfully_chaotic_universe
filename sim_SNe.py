@@ -39,14 +39,14 @@ class ZoneLayerSupernova:
         self.ax_zones.set_ylim(0, height)
         self.ax_zones.set_aspect('equal')
         self.ax_zones.set_facecolor('black')
-        self.ax_zones.set_xlabel("X Position (arb. units)", color="white", fontsize=20)
-        self.ax_zones.set_ylabel("Y Position (arb. units)", color="white", fontsize=20)
+        self.ax_zones.set_xlabel("X Position (arb. units)", color="black", fontsize=25)
+        self.ax_zones.set_ylabel("Y Position (arb. units)", color="black", fontsize=25)
 
         self.layers = []
         for i in range(num_layers):
             color = self.zone_colors[i % len(self.zone_colors)]
             circle = patches.Circle(self.center, radius=self.base_radii[i],
-                                    facecolor=color, edgecolor='white', alpha=0.6, linewidth=2)
+                                    facecolor=color, edgecolor='black', alpha=0.6, linewidth=2)
             self.ax_zones.add_patch(circle)
             self.layers.append(circle)
 
@@ -62,16 +62,16 @@ class ZoneLayerSupernova:
         self.lc_times = []
         self.lc_mags = []
         self.lc_line, = self.ax_lc.plot([], [], color="lime", linewidth=3)
-        self.ax_lc.set_title("Light Curve", fontsize=25, color="white")
-        self.ax_lc.set_xlabel("Time (frames)", fontsize=18, color="white")
-        self.ax_lc.set_ylabel("Brightness", fontsize=18, color="white")
+        self.ax_lc.set_title("Light Curve", fontsize=28, color="black")
+        self.ax_lc.set_xlabel("Time (frames)", fontsize=25, color="black")
+        self.ax_lc.set_ylabel("Brightness", fontsize=25, color="black")
         self.ax_lc.set_facecolor("#111")
-        self.ax_lc.tick_params(colors="white", labelsize=14)
+        self.ax_lc.tick_params(colors="black", labelsize=25)
         for spine in self.ax_lc.spines.values():
-            spine.set_color("white")
-        self.ax_zones.tick_params(colors="white", labelsize=16)
+            spine.set_color("black")
+        self.ax_zones.tick_params(colors="black", labelsize=25)
         for spine in self.ax_zones.spines.values():
-            spine.set_color("white")
+            spine.set_color("black")
 
         self.ax_lc.set_ylim(0, 1.4 + num_layers*0.05)  # adjust ymax with layers
         self.ax_lc.set_xlim(0, 130)
@@ -123,10 +123,10 @@ class ZoneLayerSupernova:
                 circle.set_radius(radius)
                 circle.set_alpha(0.6 * fade)
                 # Color shift during explosion
-                if expansion_progress > 0.5:
-                    circle.set_facecolor('yellow')
-                elif expansion_progress > 0.2:
-                    circle.set_facecolor('orange')
+                #if expansion_progress > 0.5:
+                #    circle.set_facecolor('yellow')
+                #elif expansion_progress > 0.2:
+                #    circle.set_facecolor('orange')
             brightness = max(1.2 * np.exp(-(frame - self.explosion_time) / 40), 0.05) * peak_scale
 
         # Update info text with better formatting
@@ -205,3 +205,4 @@ st.markdown("""
 - Each colored layer represents different stellar material zones
 - The light curve shows how brightness changes over time during the explosion
 """)
+

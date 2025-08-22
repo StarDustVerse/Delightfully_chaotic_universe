@@ -52,7 +52,7 @@ class ZoneLayerSupernova:
         # --- Figure: supernova + horizontal light curve ---
         self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(
             2, 1, figsize=(10, 5),  # 2 rows, 1 column
-            gridspec_kw={'height_ratios': [2, 1], 'hspace': 0.3}  # top bigger
+            gridspec_kw={'height_ratios': [2, 1], 'hspace': 0.6}  # top bigger
         )
 
         # Zones plot (white bg)
@@ -259,6 +259,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

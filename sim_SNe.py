@@ -94,12 +94,14 @@ class ZoneLayerSupernova:
         (self.lc_line,) = self.ax_lc.plot([], [], linewidth=3, color='orange')
         self.ax_lc.set_title("Light Curve", fontsize=10, color="black")
         self.ax_lc.set_xlabel("Time (frames)", fontsize=8, color="black")
-        self.ax_lc.set_ylabel("Brightness", fontsize=8, color="black")
+        self.ax_lc.set_ylabel("Luminosity [$L_\odot$]", fontsize=8, color="black")
         self.ax_lc.set_facecolor("#eee")
         self.ax_lc.tick_params(colors="black", labelsize=6)
         for spine in self.ax_lc.spines.values():
             spine.set_color("black")
-        self.ax_lc.set_ylim(1,10)
+        #self.ax_lc.set_ylim(1,10)
+        self.ax_lc.set_yscale('log')
+
         self.ax_lc.set_xlim(0, TOTAL_FRAMES)
         self.ax_lc.grid(True, alpha=0.3)
 
@@ -228,6 +230,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

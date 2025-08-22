@@ -22,6 +22,13 @@ class ZoneLayerSupernova:
       - At explosion: shells expand with per-layer velocities (outer faster).
       - Light curve: flat-ish Popov plateau blended to Co-decay tail.
     """
+    class ZoneLayerSupernova:
+    """
+    Slightly-more-physical toy model:
+      - Before explosion: gentle core-collapse shrink.
+      - At explosion: shells expand with per-layer velocities (outer faster).
+      - Light curve: flat-ish Popov plateau blended to Co-decay tail.
+    """
     def __init__(self, width=1200, height=1000, num_layers=5):
         self.width = width
         self.height = height
@@ -41,28 +48,28 @@ class ZoneLayerSupernova:
         self.base_radii = np.linspace(self.max_radius * 0.25, self.max_radius, num_layers)
 
         # Per-shell expansion velocities in "pixels per day"
-        # Outer shells are faster; scale so they visibly expand across the canvas over ~plateau timescale
         v0 = self.max_radius / (PLATEAU_DAYS * 0.8)  # base pixels/day
-        idx = np.arange(num_layers)                   # 0..N-1
+        idx = np.arange(num_layers)
         scale = 0.6 + 0.6 * (idx / max(1, num_layers - 1))  # 0.6..1.2
         self.v_pix_per_day = v0 * scale
 
-        # Figure: big sim + smaller light curve
+        # --- Figure: supernova + horizontal light curve ---
         self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(
-            2,1, figsize=(32, 24), gridspec_kw={'width_ratios': [3, 1]}
+            2, 1, figsize=(18, 24),  # 2 rows, 1 column
+            gridspec_kw={'height_ratios': [3, 1], 'hspace': 0.3}  # top bigger
         )
 
-        # Zones plot (white bg so all colors read cleanly)
+        # Zones plot (white bg)
         self.ax_zones.set_xlim(0, width)
         self.ax_zones.set_ylim(0, height)
         self.ax_zones.set_aspect('equal')
         self.ax_zones.set_facecolor('white')
-        self.ax_zones.set_xlabel("X Position (arb. units)", color="black", fontsize=25)
-        self.ax_zones.set_ylabel("Y Position (arb. units)", color="black", fontsize=25)
-        self.ax_zones.tick_params(colors="black", labelsize=25)
+        self.ax_zones.set_xlabel("X Position (arb. units)", color="black", fontsize=20)
+        self.ax_zones.set_ylabel("Y Position (arb. units)", color="black", fontsize=20)
+        self.ax_zones.tick_params(colors="black", labelsize=20)
         for spine in self.ax_zones.spines.values():
             spine.set_color("black")
-        self.ax_zones.set_title('💥 Supernova Explosion Simulation', fontsize=35, color='black', pad=20)
+        self.ax_zones.set_title('💥 Supernova Explosion Simulation', fontsize=28, color='black', pad=15)
 
         # Draw outer → inner so smaller shells are visible
         self.layers = [None] * num_layers
@@ -81,25 +88,25 @@ class ZoneLayerSupernova:
         # Info box
         self.info_text = self.ax_zones.text(
             0.02, 0.98, '', transform=self.ax_zones.transAxes,
-            fontsize=22, color='black', verticalalignment='top',
+            fontsize=16, color='black', verticalalignment='top',
             bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8)
         )
 
-        # Light curve setup
+        # --- Horizontal Light Curve setup ---
         self.lc_times = []
         self.lc_vals = []
-        (self.lc_line,) = self.ax_lc.plot([], [], linewidth=3)
-        self.ax_lc.set_title("Light Curve", fontsize=25, color="black")
-        self.ax_lc.set_xlabel("Time (frames)", fontsize=25, color="black")
-        self.ax_lc.set_ylabel("Brightness", fontsize=25, color="black")
-
+        (self.lc_line,) = self.ax_lc.plot([], [], linewidth=3, color='orange')
+        self.ax_lc.set_title("Light Curve", fontsize=20, color="black")
+        self.ax_lc.set_xlabel("Time (frames)", fontsize=18, color="black")
+        self.ax_lc.set_ylabel("Brightness", fontsize=18, color="black")
         self.ax_lc.set_facecolor("#eee")
-        self.ax_lc.tick_params(colors="black", labelsize=25)
+        self.ax_lc.tick_params(colors="black", labelsize=16)
         for spine in self.ax_lc.spines.values():
             spine.set_color("black")
         self.ax_lc.set_ylim(0, 1.4 + num_layers * 0.05)
         self.ax_lc.set_xlim(0, TOTAL_FRAMES)
         self.ax_lc.grid(True, alpha=0.3)
+
 
     # --- Light curve: plateau + radioactive tail (smooth blend) ---
     def plateau_lightcurve(self, t_days):
@@ -232,6 +239,7 @@ st.markdown("""
 - **Plateau light curve:** flat luminosity for ~80 days (sim time), smoothly blending into an exponential radioactive tail.
 - **Shock breakout bump:** a tiny spike at explosion time for flavor.
 """)
+
 
 
 

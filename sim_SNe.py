@@ -52,7 +52,7 @@ class ZoneLayerSupernova:
         # --- Figure: supernova + horizontal light curve ---
         self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(
             2, 1, figsize=(10, 5),  # 2 rows, 1 column
-            gridspec_kw={'height_ratios': [3, 1], 'hspace': 0.3}  # top bigger
+            gridspec_kw={'height_ratios': [2, 1], 'hspace': 0.3}  # top bigger
         )
 
         # Zones plot (white bg)
@@ -74,7 +74,6 @@ class ZoneLayerSupernova:
                 self.center,
                 radius=self.base_radii[i],
                 facecolor=self.zone_colors[i],
-                
                 linewidth=2,
                 alpha=1.0
             )
@@ -113,7 +112,7 @@ class ZoneLayerSupernova:
         
         # Layer contribution factor (outer layers contribute slightly more)
         layer_factors = np.linspace(0.8, 1.2, self.num_layers)
-        Lp_total = base_Lp * np.sum(layer_factors) / self.num_layers  # normalize
+        Lp_total = base_Lp * np.sum(layer_factors) / self.num_layers  # normalized plateau
         
         # Radioactive tail scales similarly
         tail_raw = Lp_total * NI_SCALE * np.exp(-np.maximum(0.0, t_days - PLATEAU_DAYS) / TAIL_TAU)
@@ -122,12 +121,14 @@ class ZoneLayerSupernova:
         blend = 1.0 / (1.0 + np.exp(-(t_days - PLATEAU_DAYS) / 5.0))
         L = (1 - blend) * Lp_total + blend * tail_raw
         
-        # Shock breakout spike
+        # Shock breakout spike scales with number of layers
         t0 = self.explosion_frame * DT_DAYS
         spike_width_days = 1.5
-        spike = 0.3 * Lp_total * np.exp(-0.5 * ((t_days - t0) / spike_width_days) ** 2)
+        spike_factor = 0.05 + 0.05 * self.num_layers  # more layers → taller spike
+        spike = spike_factor * Lp_total * np.exp(-0.5 * ((t_days - t0) / spike_width_days) ** 2)
         
         return np.maximum(0.0, L + spike)
+
 
 
     def update_layers(self, frame):
@@ -258,6 +259,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

@@ -74,7 +74,7 @@ class ZoneLayerSupernova:
                 self.center,
                 radius=self.base_radii[i],
                 facecolor=self.zone_colors[i],
-                edgecolor='black',
+                
                 linewidth=2,
                 alpha=1.0
             )
@@ -251,6 +251,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

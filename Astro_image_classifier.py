@@ -235,13 +235,22 @@ with tab3:
         col1, col2 = st.columns(2)
         
         with col1:
-            brightness = st.slider("Brightness", 0.0, 1.0, 0.5, help="Overall brightness of the object")
-            roundness = st.slider("Roundness", 0.0, 1.0, 0.5, help="How circular the object appears")
-            edge_sharpness = st.slider("Edge Sharpness", 0.0, 1.0, 0.5, help="Sharpness of object boundaries")
+            brightness = st.slider("Brightness", 0.0, 1.0, 
+                                 st.session_state.get('example_brightness', 0.5), 
+                                 help="Overall brightness of the object")
+            roundness = st.slider("Roundness", 0.0, 1.0, 
+                                st.session_state.get('example_roundness', 0.5), 
+                                help="How circular the object appears")
+            edge_sharpness = st.slider("Edge Sharpness", 0.0, 1.0, 
+                                     st.session_state.get('example_edge', 0.5), 
+                                     help="Sharpness of object boundaries")
         
         with col2:
-            size = st.slider("Size", 0.0, 1.0, 0.5, help="Relative size of the object")
-            center_concentration = st.slider("Center Concentration", 0.0, 1.0, 0.5, 
+            size = st.slider("Size", 0.0, 1.0, 
+                           st.session_state.get('example_size', 0.5), 
+                           help="Relative size of the object")
+            center_concentration = st.slider("Center Concentration", 0.0, 1.0, 
+                                           st.session_state.get('example_center', 0.5), 
                                            help="How concentrated the brightness is at the center")
         
         # Prediction
@@ -273,15 +282,27 @@ with tab3:
         
         with example_col1:
             if st.button("🌌 Typical Galaxy"):
-                st.experimental_rerun()
+                st.session_state.example_brightness = 0.7
+                st.session_state.example_roundness = 0.4
+                st.session_state.example_edge = 0.3
+                st.session_state.example_size = 0.6
+                st.session_state.example_center = 0.8
         
         with example_col2:
             if st.button("☁️ Typical Nebula"):
-                st.experimental_rerun()
+                st.session_state.example_brightness = 0.4
+                st.session_state.example_roundness = 0.2
+                st.session_state.example_edge = 0.1
+                st.session_state.example_size = 0.8
+                st.session_state.example_center = 0.3
         
         with example_col3:
             if st.button("⭐ Typical Star"):
-                st.experimental_rerun()
+                st.session_state.example_brightness = 0.9
+                st.session_state.example_roundness = 0.95
+                st.session_state.example_edge = 0.9
+                st.session_state.example_size = 0.1
+                st.session_state.example_center = 0.95
     
     else:
         st.warning("⚠️ Please train the model first in the 'Model Training' tab!")

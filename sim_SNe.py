@@ -51,7 +51,7 @@ class ZoneLayerSupernova:
 
         # --- Figure: supernova + horizontal light curve ---
         self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(
-            2, 1, figsize=(15, 6),  # 2 rows, 1 column
+            2, 1, figsize=(30, 6),  # 2 rows, 1 column
             gridspec_kw={'height_ratios': [3, 1], 'hspace': 0.3}  # top bigger
         )
 
@@ -65,7 +65,7 @@ class ZoneLayerSupernova:
         self.ax_zones.tick_params(colors="black", labelsize=6)
         for spine in self.ax_zones.spines.values():
             spine.set_color("black")
-        self.ax_zones.set_title('💥 Supernova Explosion Simulation', fontsize=10, color='black', pad=15)
+        self.ax_zones.set_title('Supernova Explosion Simulation', fontsize=10, color='black', pad=15)
 
         # Draw outer → inner so smaller shells are visible
         self.layers = [None] * num_layers
@@ -251,6 +251,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

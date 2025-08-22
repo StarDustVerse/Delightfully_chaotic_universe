@@ -54,7 +54,11 @@ class ZoneLayerSupernova:
             2, 1, figsize=(10, 5),  # 2 rows, 1 column
             gridspec_kw={'height_ratios': [2, 1], 'hspace': 0.6}  # top bigger
         )
-        self.fig.tight_layout() 
+                
+        self.fig.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.1, hspace=0.4)
+        
+        # Keep supernova plot circles undistorted
+        self.ax_zones.set_aspect('equal', adjustable='box')
         # Zones plot (white bg)
         self.ax_zones.set_xlim(0, width)
         self.ax_zones.set_ylim(0, height)
@@ -207,8 +211,7 @@ class ZoneLayerSupernova:
         info = (f"{phase}\n"
         f"Frame: {frame}/{TOTAL_FRAMES}\n"
         f"Layers: {self.num_layers}\n"
-        f"Luminosity: {brightness:.2e} $L_\odot$")
-
+        f"Luminosity: {brightness:.2f} × 10⁹ $L_\odot$"
         self.info_text.set_text(info)
 
         return self.fig
@@ -263,6 +266,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

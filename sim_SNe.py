@@ -182,12 +182,19 @@ class ZoneLayerSupernova:
                 new_rgb = fade * base_rgb + (1 - fade) * bg_rgb
                 c.set_facecolor(new_rgb)
 
-
         # Light curve update
         brightness = self.plateau_lightcurve(t_days)
         self.lc_times.append(frame)
         self.lc_vals.append(brightness)
         self.lc_line.set_data(self.lc_times, self.lc_vals)
+        
+        # Fixed y-axis version:
+        self.ax_lc.set_ylim(0, 1.5*LP_PHYS)
+        
+        # OR dynamic y-axis version:
+        # self.ax_lc.relim()
+        # self.ax_lc.autoscale_view()
+
 
         # Info box
         info = f"{phase}\nFrame: {frame}/{TOTAL_FRAMES}\nLayers: {self.num_layers}\nBrightness: {brightness:.3f}"
@@ -245,6 +252,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

@@ -162,11 +162,26 @@ class ZoneLayerSupernova:
             dt_days = max(0.0, t_days - self.t_blast_days)
             # r_i(t) = r_i(t0) + v_i * dt
             new_r = self.radii_at_blast + self.v_pix_per_day * dt_days
+            #for i, c in enumerate(self.layers):
+                #c.set_radius(new_r[i])
+                # Optional fading over very late times so it doesn't just fill the canvas
+                #fade = 1.0 - 0.4 * (dt_days / (PLATEAU_DAYS * 1.5))
+                #c.set_alpha(max(0.4, min(1.0, fade)))
             for i, c in enumerate(self.layers):
                 c.set_radius(new_r[i])
-                # Optional fading over very late times so it doesn't just fill the canvas
-                fade = 1.0 - 0.4 * (dt_days / (PLATEAU_DAYS * 1.5))
-                c.set_alpha(max(0.4, min(1.0, fade)))
+                
+                # Exponential fade to simulate mixing
+                fade_timescale = PLATEAU_DAYS * 1.5
+                fade = np.exp(-dt_days / fade_timescale)
+                c.set_alpha(fade)
+                
+                # Blend color toward ISM (white background)
+                import matplotlib.colors as mcolors
+                base_rgb = np.array(mcolors.to_rgb(self.zone_colors[i]))
+                bg_rgb = np.array([1.0, 1.0, 1.0])  # ISM background
+                new_rgb = fade * base_rgb + (1 - fade) * bg_rgb
+                c.set_facecolor(new_rgb)
+
 
         # Light curve update
         brightness = self.plateau_lightcurve(t_days)
@@ -230,6 +245,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

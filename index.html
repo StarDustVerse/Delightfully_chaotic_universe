@@ -7,24 +7,32 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-    body { margin: 0; background-color: #ffffff; color: #333; }
+    body { 
+      margin: 0; 
+      color: #333;
+      /* Full-page background image */
+      background-image: url('your-image.jpg'); /* Replace with your image path */
+      background-size: cover; /* Cover entire page */
+      background-position: center; /* Center the image */
+      background-repeat: no-repeat; /* Avoid tiling */
+      background-attachment: fixed; /* Keeps image fixed when scrolling */
+    }
 
-    /* Header */
     header { 
-      background-color: #1f2937; 
+      background-color: rgba(31, 41, 55, 0.85); /* Slightly transparent so text is readable */
       color: white; 
       padding: 2rem; 
       text-align: center; 
     }
 
-    /* Navigation bar */
     nav { 
-      background-color: #111827; 
+      background-color: rgba(17, 24, 39, 0.85); 
       display: flex; 
       justify-content: center; 
       gap: 2rem; 
       padding: 1rem 0; 
     }
+
     nav a { 
       color: #fff; 
       text-decoration: none; 
@@ -34,16 +42,16 @@
       text-decoration: underline; 
     }
 
-    /* Section styling */
     .section { 
       padding: 4rem 2rem; 
       max-width: 900px; 
       margin: auto; 
+      background-color: rgba(255,255,255,0.9); /* Slight white overlay for readability */
+      border-radius: 12px;
     }
 
-    /* Footer */
     footer { 
-      background-color: #1f2937; 
+      background-color: rgba(31, 41, 55, 0.85); 
       color: white; 
       text-align: center; 
       padding: 2rem; 
@@ -51,28 +59,22 @@
     }
   </style>
 </head>
-
-  
 <body>
   <header>
     <h1>Archana Purushothaman</h1>
     <p>Research • Astrophysics • Data Analysis • Simulation • Coding</p>
   </header>
-  
+
   <nav>
     <a href="index.html">Home</a>
     <a href="Skills.html">CV</a>
     <a href="research_projects.html">Research</a>
     <a href="int_project.html">Projects</a>
   </nav>
-  </header>
 
-
-  <main>
+  <main class="section">
     <section id="about">
-    <div style="max-width:900px; margin:0 auto; padding:2rem;">
-    <h2>About Me</h2>
-
+      <h2>About Me</h2>
       <p>
         Astrophysicist with a Master’s in Astrophysics and Cosmology from the University of Bologna, 
         with research experience in high-energy astrophysics, stellar evolution, and multi-wavelength data analysis. 
@@ -93,6 +95,7 @@
   </main>
 </body>
 </html>
+
 
 
 

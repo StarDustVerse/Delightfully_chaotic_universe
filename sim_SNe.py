@@ -120,7 +120,7 @@ class ZoneLayerSupernova:
         spike_width_days = 1.5
         spike = 0.3 * Lp * np.exp(-0.5 * ((t_days - t0) / spike_width_days) ** 2)
         
-    return np.maximum(0.0, L + spike)
+        return np.maximum(0.0, L + spike)
 
 
     def update_layers(self, frame):
@@ -251,6 +251,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

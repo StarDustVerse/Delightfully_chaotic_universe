@@ -103,7 +103,7 @@ class ZoneLayerSupernova:
 
     # --- Light curve: plateau + radioactive tail (smooth blend) ---
     def plateau_lightcurve(self, t_days):
-        Lp = 1.0  # normalized plateau level
+        Lp = 1.5  # normalized plateau level
         tp = PLATEAU_DAYS
 
         # Tail ~ exp(-(t - tp)/tau), scaled by NI_SCALE; zero before tp
@@ -224,6 +224,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

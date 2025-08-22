@@ -92,12 +92,6 @@ class ZoneLayerSupernova:
         )
         info_placeholder = st.sidebar.empty()
         
-        info = (f"{phase}\n"
-                f"Frame: {frame}/{TOTAL_FRAMES}\n"
-                f"Layers: {self.num_layers}\n"
-                f"Luminosity: {brightness/1e9:.2f} × 10⁹ L_sun")
-        
-        info_placeholder.markdown(f"```\n{info}\n```")
         # --- Horizontal Light Curve setup ---
         self.lc_times = []
         self.lc_vals = []
@@ -219,7 +213,10 @@ class ZoneLayerSupernova:
         f"Frame: {frame}/{TOTAL_FRAMES}\n"
         f"Layers: {self.num_layers}\n"
         f"Luminosity: {brightness/1e9:.2f} × 10⁹ $L_\odot$")
-        self.info_text.set_text(info)
+        
+        info_placeholder.markdown(f"```\n{info}\n```")
+
+
 
         return self.fig
 
@@ -273,6 +270,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

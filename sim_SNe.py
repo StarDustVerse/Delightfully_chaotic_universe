@@ -51,7 +51,7 @@ class ZoneLayerSupernova:
 
         # --- Figure: supernova + horizontal light curve ---
         self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(
-            2, 1, figsize=(10, 8),  # 2 rows, 1 column
+            2, 1, figsize=(10, 5),  # 2 rows, 1 column
             gridspec_kw={'height_ratios': [3, 1], 'hspace': 0.3}  # top bigger
         )
 
@@ -108,17 +108,24 @@ class ZoneLayerSupernova:
 
     # --- Light curve: plateau + radioactive tail (smooth blend) ---
     def plateau_lightcurve(self, t_days):
-        Lp = LP_PHYS
+        # Base plateau luminosity per layer
+        base_Lp = LP_PHYS
         
-        # Radioactive tail
-        tail_raw = Lp * NI_SCALE * np.exp(-np.maximum(0.0, t_days - PLATEAU_DAYS) / TAIL_TAU)
+        # Layer contribution factor (outer layers contribute slightly more)
+        layer_factors = np.linspace(0.8, 1.2, self.num_layers)
+        Lp_total = base_Lp * np.sum(layer_factors) / self.num_layers  # normalize
+        
+        # Radioactive tail scales similarly
+        tail_raw = Lp_total * NI_SCALE * np.exp(-np.maximum(0.0, t_days - PLATEAU_DAYS) / TAIL_TAU)
+        
+        # Smooth blend plateau → tail
         blend = 1.0 / (1.0 + np.exp(-(t_days - PLATEAU_DAYS) / 5.0))
-        L = (1 - blend) * Lp + blend * tail_raw
+        L = (1 - blend) * Lp_total + blend * tail_raw
         
         # Shock breakout spike
         t0 = self.explosion_frame * DT_DAYS
         spike_width_days = 1.5
-        spike = 0.3 * Lp * np.exp(-0.5 * ((t_days - t0) / spike_width_days) ** 2)
+        spike = 0.3 * Lp_total * np.exp(-0.5 * ((t_days - t0) / spike_width_days) ** 2)
         
         return np.maximum(0.0, L + spike)
 

@@ -57,12 +57,12 @@ class ZoneLayerSupernova:
         self.ax_zones.set_ylim(0, height)
         self.ax_zones.set_aspect('equal')
         self.ax_zones.set_facecolor('white')
-        self.ax_zones.set_xlabel("X Position (arb. units)", color="black", fontsize=20)
-        self.ax_zones.set_ylabel("Y Position (arb. units)", color="black", fontsize=20)
+        self.ax_zones.set_xlabel("X Position (arb. units)", color="black", fontsize=8)
+        self.ax_zones.set_ylabel("Y Position (arb. units)", color="black", fontsize=8)
         self.ax_zones.tick_params(colors="black", labelsize=20)
         for spine in self.ax_zones.spines.values():
             spine.set_color("black")
-        self.ax_zones.set_title('💥 Supernova Explosion Simulation', fontsize=28, color='black', pad=15)
+        self.ax_zones.set_title('💥 Supernova Explosion Simulation', fontsize=10, color='black', pad=15)
 
         # Draw outer → inner so smaller shells are visible
         self.layers = [None] * num_layers
@@ -81,7 +81,7 @@ class ZoneLayerSupernova:
         # Info box
         self.info_text = self.ax_zones.text(
             0.02, 0.98, '', transform=self.ax_zones.transAxes,
-            fontsize=16, color='black', verticalalignment='top',
+            fontsize=8, color='black', verticalalignment='top',
             bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8)
         )
 
@@ -89,9 +89,9 @@ class ZoneLayerSupernova:
         self.lc_times = []
         self.lc_vals = []
         (self.lc_line,) = self.ax_lc.plot([], [], linewidth=3, color='orange')
-        self.ax_lc.set_title("Light Curve", fontsize=20, color="black")
-        self.ax_lc.set_xlabel("Time (frames)", fontsize=18, color="black")
-        self.ax_lc.set_ylabel("Brightness", fontsize=18, color="black")
+        self.ax_lc.set_title("Light Curve", fontsize=10, color="black")
+        self.ax_lc.set_xlabel("Time (frames)", fontsize=8, color="black")
+        self.ax_lc.set_ylabel("Brightness", fontsize=8, color="black")
         self.ax_lc.set_facecolor("#eee")
         self.ax_lc.tick_params(colors="black", labelsize=16)
         for spine in self.ax_lc.spines.values():
@@ -224,6 +224,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

@@ -17,14 +17,7 @@ ANIMATION_SPEED = 0.02     # seconds per frame (fixed)
 skip = 30
 class ZoneLayerSupernova:
     """
-    Slightly-more-physical toy model:
-      - Before explosion: gentle core-collapse shrink.
-      - At explosion: shells expand with per-layer velocities (outer faster).
-      - Light curve: flat-ish Popov plateau blended to Co-decay tail.
-    """
-    class ZoneLayerSupernova:
-    """
-    Slightly-more-physical toy model:
+    
       - Before explosion: gentle core-collapse shrink.
       - At explosion: shells expand with per-layer velocities (outer faster).
       - Light curve: flat-ish Popov plateau blended to Co-decay tail.
@@ -239,6 +232,7 @@ st.markdown("""
 - **Plateau light curve:** flat luminosity for ~80 days (sim time), smoothly blending into an exponential radioactive tail.
 - **Shock breakout bump:** a tiny spike at explosion time for flavor.
 """)
+
 
 
 

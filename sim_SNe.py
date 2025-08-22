@@ -102,7 +102,7 @@ class ZoneLayerSupernova:
         self.ax_lc.tick_params(colors="black", labelsize=6)
         for spine in self.ax_lc.spines.values():
             spine.set_color("black")
-        self.ax_lc.set_ylim(0.5, 3 * LP_PHYS) 
+        self.ax_lc.set_ylim(0.5, 2 * LP_PHYS) 
         #self.ax_lc.set_yscale('log')
 
         self.ax_lc.set_xlim(0, TOTAL_FRAMES)
@@ -200,7 +200,7 @@ class ZoneLayerSupernova:
         self.lc_line.set_data(self.lc_times, self.lc_vals)
         
         # Fixed y-axis version:
-        self.ax_lc.set_ylim(0, 3*LP_PHYS)
+        self.ax_lc.set_ylim(0, 2*LP_PHYS)
         
         # OR dynamic y-axis version:
         # self.ax_lc.relim()
@@ -266,6 +266,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

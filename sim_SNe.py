@@ -14,7 +14,7 @@ PLATEAU_DAYS = 80.0        # plateau duration in days
 TAIL_TAU = 111.3           # Co decay timescale (days)
 NI_SCALE = 0.6             # scales tail brightness (proxy for M_Ni)
 ANIMATION_SPEED = 0.02     # seconds per frame (fixed)
-skip = 5
+skip = 30
 class ZoneLayerSupernova:
     """
     Slightly-more-physical toy model:
@@ -233,5 +233,6 @@ st.markdown("""
 - **Plateau light curve:** flat luminosity for ~80 days (sim time), smoothly blending into an exponential radioactive tail.
 - **Shock breakout bump:** a tiny spike at explosion time for flavor.
 """)
+
 
 

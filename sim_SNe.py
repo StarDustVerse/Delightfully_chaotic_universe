@@ -39,7 +39,7 @@ class ZoneLayerSupernova:
         self.ax_zones.set_xlim(0, width)
         self.ax_zones.set_ylim(0, height)
         self.ax_zones.set_aspect('equal')
-        self.ax_zones.set_facecolor('black')
+        self.ax_zones.set_facecolor('white')
         self.ax_zones.set_xlabel("X Position (arb. units)", color="black", fontsize=25)
         self.ax_zones.set_ylabel("Y Position (arb. units)", color="black", fontsize=25)
 
@@ -196,4 +196,5 @@ st.markdown("""
 - Each colored layer represents different stellar material zones
 - The light curve shows how brightness changes over time during the explosion
 """)
+
 

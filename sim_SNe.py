@@ -212,13 +212,15 @@ with col2:
 
                 
         for frame in range(TOTAL_FRAMES + 1):
+            # always update the physics
             sim.update_layers(frame)
-            
-            # only render occasionally
+        
+            # only render every nth frame
             if frame % skip == 0:
-                placeholder.pyplot(sim.fig, use_container_width=True)
+                
+                placeholder.pyplot(sim.fig, use_container_width=True, clear_figure=False)
                 progress_bar.progress(frame / TOTAL_FRAMES)
-                time.sleep(ANIMATION_SPEED)
+                #time.sleep(ANIMATION_SPEED)
         
 
         progress_bar.progress(1.0)
@@ -231,4 +233,5 @@ st.markdown("""
 - **Plateau light curve:** flat luminosity for ~80 days (sim time), smoothly blending into an exponential radioactive tail.
 - **Shock breakout bump:** a tiny spike at explosion time for flavor.
 """)
+
 

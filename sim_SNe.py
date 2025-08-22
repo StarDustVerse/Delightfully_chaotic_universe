@@ -95,14 +95,14 @@ class ZoneLayerSupernova:
 
         # Phases
         if self.time < self.core_collapse_time:
-            phase = "🔴 Core Collapse"
+            phase = "Core Collapse"
             progress = 1 - (frame / self.core_collapse_time) * 0.7
             for i, circle in enumerate(self.layers):
                 circle.set_radius(self.base_radii[i] * progress)
             brightness = (0.1 + 0.01 * frame) * peak_scale
 
         elif self.time < self.explosion_time:
-            phase = "⚡ Critical Moment"
+            phase = "Critical Moment"
             for i, circle in enumerate(self.layers):
                 circle.set_radius(self.base_radii[i] * 0.3)
                 # Add pulsing effect
@@ -115,13 +115,13 @@ class ZoneLayerSupernova:
                 self.explosion_started = True
                 self.explosion_start_radii = [c.get_radius() for c in self.layers]
 
-            phase = "💥 Supernova Explosion!"
+            phase = "Supernova Explosion!"
             expansion_progress = min((frame - self.explosion_time) / 60, 1.5)
             fade = max(0, 1.2 - expansion_progress)
             for i, circle in enumerate(self.layers):
                 radius = self.explosion_start_radii[i] * (1 + expansion_progress * (1 + i * 0.2))
                 circle.set_radius(radius)
-                circle.set_alpha(0.6 * fade)
+                circle.set_alpha(fade)
                 # Color shift during explosion
                 #if expansion_progress > 0.5:
                 #    circle.set_facecolor('yellow')
@@ -202,5 +202,6 @@ st.markdown("""
 - Each colored layer represents different stellar material zones
 - The light curve shows how brightness changes over time during the explosion
 """)
+
 
 

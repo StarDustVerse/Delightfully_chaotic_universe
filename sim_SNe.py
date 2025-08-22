@@ -51,7 +51,7 @@ class ZoneLayerSupernova:
 
         # --- Figure: supernova + horizontal light curve ---
         self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(
-            2, 1, figsize=(30, 6),  # 2 rows, 1 column
+            2, 1, figsize=(10, 8),  # 2 rows, 1 column
             gridspec_kw={'height_ratios': [3, 1], 'hspace': 0.3}  # top bigger
         )
 

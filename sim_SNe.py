@@ -102,7 +102,7 @@ class ZoneLayerSupernova:
         self.ax_lc.tick_params(colors="black", labelsize=6)
         for spine in self.ax_lc.spines.values():
             spine.set_color("black")
-        self.ax_lc.set_ylim(0, 1.5 * LP_PHYS) 
+        self.ax_lc.set_ylim(0.5, 3 * LP_PHYS) 
         #self.ax_lc.set_yscale('log')
 
         self.ax_lc.set_xlim(0, TOTAL_FRAMES)
@@ -266,6 +266,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

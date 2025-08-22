@@ -84,7 +84,7 @@ class ZoneLayerSupernova:
         # Info box
         self.info_text = self.ax_zones.text(
             0.02, 0.98, '', transform=self.ax_zones.transAxes,
-            fontsize=8, color='green', verticalalignment='top',
+            fontsize=8, color='white', verticalalignment='top',
             bbox=dict(boxstyle="round,pad=0.3", facecolor="black", alpha=0.8)
         )
 
@@ -108,21 +108,20 @@ class ZoneLayerSupernova:
 
     # --- Light curve: plateau + radioactive tail (smooth blend) ---
     def plateau_lightcurve(self, t_days):
-        # Plateau luminosity (physical)
-        Lp = LP_PHYS  # in L_sun units
+        Lp = LP_PHYS
         
-        # Tail: Co decay scaled by NI_SCALE
+        # Radioactive tail
         tail_raw = Lp * NI_SCALE * np.exp(-np.maximum(0.0, t_days - PLATEAU_DAYS) / TAIL_TAU)
-        
-        # Smooth blend around plateau → tail
         blend = 1.0 / (1.0 + np.exp(-(t_days - PLATEAU_DAYS) / 5.0))
         L = (1 - blend) * Lp + blend * tail_raw
         
-        # Shock breakout spike (small fraction)
+        # Shock breakout spike
         t0 = self.explosion_frame * DT_DAYS
-        spike = 0.1 * Lp * np.exp(-0.5 * ((t_days - t0) / 2.0) ** 2)
+        spike_width_days = 1.5
+        spike = 0.3 * Lp * np.exp(-0.5 * ((t_days - t0) / spike_width_days) ** 2)
         
-        return np.maximum(0.0, L)
+    return np.maximum(0.0, L + spike)
+
 
     def update_layers(self, frame):
         self.time_frame = frame
@@ -252,6 +251,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

@@ -30,7 +30,7 @@ class ZoneLayerSupernova:
         self.base_radii = np.linspace(self.max_radius * 0.2, self.max_radius, num_layers)
 
         # Two-panel figure
-        self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(1, 2, figsize=(18, 9))
+        self.fig, (self.ax_zones, self.ax_lc) = plt.subplots(1, 2, figsize=(30, 24))
     
 
         # Zones setup
@@ -52,7 +52,7 @@ class ZoneLayerSupernova:
         self.ax_zones.set_title('Supernova Simulation', fontsize=30, color='black')
         self.info_text = self.ax_zones.text(
             0.02, 0.98, '', transform=self.ax_zones.transAxes,
-            fontsize=9, color='white', verticalalignment='top'
+            fontsize=25, color='white', verticalalignment='top'
         )
 
         
@@ -144,6 +144,7 @@ if st.button("▶️ Play Full Simulation"):
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
         time.sleep(0.12)
+
 
 
 

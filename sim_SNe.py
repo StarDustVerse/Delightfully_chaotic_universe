@@ -54,7 +54,7 @@ class ZoneLayerSupernova:
             2, 1, figsize=(10, 5),  # 2 rows, 1 column
             gridspec_kw={'height_ratios': [2, 1], 'hspace': 0.6}  # top bigger
         )
-
+        self.fig.tight_layout() 
         # Zones plot (white bg)
         self.ax_zones.set_xlim(0, width)
         self.ax_zones.set_ylim(0, height)
@@ -263,6 +263,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 

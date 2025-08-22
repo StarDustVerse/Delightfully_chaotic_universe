@@ -18,14 +18,14 @@ class ZoneLayerSupernova:
 
         # High-contrast color
         self.zone_colors = [
-            "#E41A1C",  # red
-            "#377EB8",  # blue
-            "#4DAF4A",  # green
-            "#984EA3",  # purple
-            "#FF7F00",  # orange
-            "#A65628",  # brown
-            "#F781BF",  # pink
-            "#999999"   # gray
+            'red',
+            'blue',
+            'green',
+            'purple',
+            'orange',
+            'brown',
+            'pink',
+            'gray'
         ]
         self.base_radii = np.linspace(self.max_radius * 0.2, self.max_radius, num_layers)
 
@@ -144,6 +144,7 @@ if st.button("▶️ Play Full Simulation"):
         sim.update_layers(frame)
         placeholder.pyplot(sim.fig, use_container_width=False)
         time.sleep(0.12)
+
 
 
 

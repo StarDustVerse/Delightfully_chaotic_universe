@@ -125,7 +125,7 @@ class ZoneLayerSupernova:
             for i, circle in enumerate(self.layers):
                 radius = self.explosion_start_radii[i] * (1 + expansion_progress * (1 + i * 0.2))
                 circle.set_radius(radius)
-                circle.set_alpha(1 * fade)
+                circle.set_alpha(fade)
                 # Removed color override here → layers keep their original self.zone_colors
             brightness = max(1.2 * np.exp(-(frame - self.explosion_time) / 40), 0.05) * peak_scale
 
@@ -196,3 +196,4 @@ st.markdown("""
 - Each colored layer represents different stellar material zones
 - The light curve shows how brightness changes over time during the explosion
 """)
+

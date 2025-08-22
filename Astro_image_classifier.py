@@ -54,12 +54,21 @@ def generate_galaxy_features(n_samples=50):
     np.random.seed(42)  # For reproducibility
     features = []
     for _ in range(n_samples):
-        brightness = np.random.normal(0.7, 0.15)
-        roundness = np.random.normal(0.4, 0.2)
-        edge_sharpness = np.random.normal(0.3, 0.1)
-        size = np.random.normal(0.6, 0.2)
-        center_concentration = np.random.normal(0.8, 0.1)
-        features.append([brightness, roundness, edge_sharpness, size, center_concentration])
+        # Add more realistic variance and overlap between classes
+        brightness = np.random.normal(0.6, 0.25)  # Increased variance
+        roundness = np.random.normal(0.45, 0.25)   # More overlap with other classes
+        edge_sharpness = np.random.normal(0.35, 0.2)  # Increased variance
+        size = np.random.normal(0.5, 0.3)         # More variance
+        center_concentration = np.random.normal(0.7, 0.2)  # Less concentrated
+        
+        # Clip values to realistic ranges
+        features.append([
+            np.clip(brightness, 0, 1),
+            np.clip(roundness, 0, 1),
+            np.clip(edge_sharpness, 0, 1),
+            np.clip(size, 0, 1),
+            np.clip(center_concentration, 0, 1)
+        ])
     return np.array(features)
 
 @st.cache_data
@@ -68,12 +77,21 @@ def generate_nebula_features(n_samples=50):
     np.random.seed(43)
     features = []
     for _ in range(n_samples):
-        brightness = np.random.normal(0.4, 0.2)
-        roundness = np.random.normal(0.2, 0.15)
-        edge_sharpness = np.random.normal(0.1, 0.05)
-        size = np.random.normal(0.8, 0.2)
-        center_concentration = np.random.normal(0.3, 0.15)
-        features.append([brightness, roundness, edge_sharpness, size, center_concentration])
+        # Make nebulae less distinct from galaxies
+        brightness = np.random.normal(0.45, 0.25)  # Some overlap with galaxies
+        roundness = np.random.normal(0.25, 0.2)    # Some can be rounder
+        edge_sharpness = np.random.normal(0.2, 0.15)  # Some variation
+        size = np.random.normal(0.7, 0.25)         # More variance in size
+        center_concentration = np.random.normal(0.4, 0.25)  # More variance
+        
+        # Clip values to realistic ranges
+        features.append([
+            np.clip(brightness, 0, 1),
+            np.clip(roundness, 0, 1),
+            np.clip(edge_sharpness, 0, 1),
+            np.clip(size, 0, 1),
+            np.clip(center_concentration, 0, 1)
+        ])
     return np.array(features)
 
 @st.cache_data
@@ -82,23 +100,80 @@ def generate_star_features(n_samples=50):
     np.random.seed(44)
     features = []
     for _ in range(n_samples):
-        brightness = np.random.normal(0.9, 0.1)
-        roundness = np.random.normal(0.95, 0.03)
-        edge_sharpness = np.random.normal(0.9, 0.05)
-        size = np.random.normal(0.1, 0.05)
-        center_concentration = np.random.normal(0.95, 0.03)
-        features.append([brightness, roundness, edge_sharpness, size, center_concentration])
+        # Add some "difficult" stars that might look like galaxies
+        brightness = np.random.normal(0.8, 0.2)   # Some dimmer stars
+        roundness = np.random.normal(0.85, 0.15)  # Some distorted by atmosphere
+        edge_sharpness = np.random.normal(0.75, 0.2)  # Atmospheric effects
+        size = np.random.normal(0.2, 0.15)        # Some bigger apparent sizes
+        center_concentration = np.random.normal(0.85, 0.15)  # Some spread
+        
+        # Clip values to realistic ranges  
+        features.append([
+            np.clip(brightness, 0, 1),
+            np.clip(roundness, 0, 1),
+            np.clip(edge_sharpness, 0, 1),
+            np.clip(size, 0, 1),
+            np.clip(center_concentration, 0, 1)
+        ])
     return np.array(features)
 
 @st.cache_data
 def create_dataset(n_samples):
-    """Create the complete dataset"""
+    """Create the complete dataset with realistic challenges"""
     galaxy_features = generate_galaxy_features(n_samples)
     nebula_features = generate_nebula_features(n_samples)
     star_features = generate_star_features(n_samples)
     
-    X = np.vstack([galaxy_features, nebula_features, star_features])
-    y = ['Galaxy'] * n_samples + ['Nebula'] * n_samples + ['Star'] * n_samples
+    # Add some "difficult" edge cases to make classification more realistic
+    np.random.seed(100)  # Different seed for edge cases
+    
+    # Add some compact galaxies that look like stars
+    n_edge = max(5, n_samples // 20)  # At least 5 edge cases
+    compact_galaxies = []
+    for _ in range(n_edge):
+        brightness = np.random.normal(0.75, 0.1)  # Bright like stars
+        roundness = np.random.normal(0.8, 0.1)    # Round like stars
+        edge_sharpness = np.random.normal(0.6, 0.1)  # But not as sharp
+        size = np.random.normal(0.3, 0.1)         # Small but bigger than stars
+        center_concentration = np.random.normal(0.9, 0.05)  # Very concentrated
+        compact_galaxies.append([
+            np.clip(brightness, 0, 1),
+            np.clip(roundness, 0, 1),
+            np.clip(edge_sharpness, 0, 1),
+            np.clip(size, 0, 1),
+            np.clip(center_concentration, 0, 1)
+        ])
+    
+    # Add some bright nebular regions that look like stars
+    bright_nebulae = []
+    for _ in range(n_edge):
+        brightness = np.random.normal(0.7, 0.15)  # Brighter than typical nebulae
+        roundness = np.random.normal(0.6, 0.2)    # More round than typical
+        edge_sharpness = np.random.normal(0.4, 0.1)  # Sharper edges
+        size = np.random.normal(0.4, 0.15)        # Smaller than typical
+        center_concentration = np.random.normal(0.6, 0.15)  # More concentrated
+        bright_nebulae.append([
+            np.clip(brightness, 0, 1),
+            np.clip(roundness, 0, 1),
+            np.clip(edge_sharpness, 0, 1),
+            np.clip(size, 0, 1),
+            np.clip(center_concentration, 0, 1)
+        ])
+    
+    # Combine all features
+    X = np.vstack([
+        galaxy_features, 
+        nebula_features, 
+        star_features,
+        np.array(compact_galaxies),  # These are galaxies but look like stars
+        np.array(bright_nebulae)     # These are nebulae but look different
+    ])
+    
+    y = (['Galaxy'] * n_samples + 
+         ['Nebula'] * n_samples + 
+         ['Star'] * n_samples +
+         ['Galaxy'] * n_edge +      # Edge case galaxies
+         ['Nebula'] * n_edge)       # Edge case nebulae
     
     feature_names = ['Brightness', 'Roundness', 'Edge Sharpness', 'Size', 'Center Concentration']
     
@@ -333,7 +408,7 @@ with tab4:
         st.subheader("Feature Correlation Matrix")
         correlation_matrix = np.corrcoef(X.T)
         
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=(4, 3))
         sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', center=0,
                    xticklabels=feature_names, yticklabels=feature_names, ax=ax)
         ax.set_title('Feature Correlation Matrix')
@@ -346,7 +421,8 @@ with tab4:
         
         fig_3d = px.scatter_3d(df_viz, x='Brightness', y='Roundness', z='Size',
                               color='Object Type', title='3D Feature Space',
-                              color_discrete_sequence=['green', 'red', 'blue'])
+                              color_discrete_sequence=['red', 'green', 'blue'], width=800, height=600)
+        
         st.plotly_chart(fig_3d, use_container_width=True)
     
     else:
@@ -357,8 +433,7 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: #666;'>
-        <p>🔭 Built with Streamlit | 🚀 Perfect for GitHub Pages deployment</p>
-        <p>Simulated astronomical data for demonstration purposes</p>
+        <p>🔭 Built with Streamlit | Simulated astronomical data for demonstration purposes</p>
     </div>
     """, 
     unsafe_allow_html=True

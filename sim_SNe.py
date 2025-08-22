@@ -16,7 +16,7 @@ class ZoneLayerSupernova:
         self.max_radius = min(width, height) // 2.5
         self.explosion_started = False
 
-        # High-contrast color in order
+        # High-contrast colors in order
         self.zone_colors = [
             'red',
             'blue',
@@ -45,23 +45,23 @@ class ZoneLayerSupernova:
 
         self.layers = []
         for i in range(num_layers):
-            color = self.zone_colors[i]  # use in order, no wrap
+            color = self.zone_colors[i]
             circle = patches.Circle(
                 self.center,
                 radius=self.base_radii[i],
                 facecolor=color,
                 edgecolor='white',
-                alpha=1,  # solid
+                alpha=1,
                 linewidth=2
             )
             self.ax_zones.add_patch(circle)
             self.layers.append(circle)
 
-        self.ax_zones.set_title('💥 Supernova Explosion Simulation', fontsize=35, color='white', pad=20)
+        self.ax_zones.set_title('💥 Supernova Explosion Simulation', fontsize=35, color='black', pad=20)
         self.info_text = self.ax_zones.text(
             0.02, 0.98, '', transform=self.ax_zones.transAxes,
             fontsize=25, color='black', verticalalignment='top',
-            bbox=dict(boxstyle="round,pad=0.3", facecolor="black", alpha=0.7)
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.7)
         )
 
         # Light curve setup
@@ -69,13 +69,13 @@ class ZoneLayerSupernova:
         self.lc_mags = []
         self.lc_line, = self.ax_lc.plot([], [], color="lime", linewidth=3)
         self.ax_lc.set_title("Light Curve", fontsize=25, color="black")
-        self.ax_lc.set_xlabel("Time (frames)", fontsize=18, color="black")
-        self.ax_lc.set_ylabel("Brightness", fontsize=18, color="black")
-        self.ax_lc.set_facecolor("#111")
-        self.ax_lc.tick_params(colors="black", labelsize=14, rotation=45)  # rotate ticks
+        self.ax_lc.set_xlabel("Time (frames)", fontsize=25, color="black")
+        self.ax_lc.set_ylabel("Brightness", fontsize=25, color="black", rotation=90)
+        self.ax_lc.set_facecolor("#eee")
+        self.ax_lc.tick_params(colors="black", labelsize=25)
         for spine in self.ax_lc.spines.values():
             spine.set_color("black")
-        self.ax_zones.tick_params(colors="black", labelsize=16)
+        self.ax_zones.tick_params(colors="black", labelsize=25)
         for spine in self.ax_zones.spines.values():
             spine.set_color("black")
 
@@ -126,10 +126,7 @@ class ZoneLayerSupernova:
                 radius = self.explosion_start_radii[i] * (1 + expansion_progress * (1 + i * 0.2))
                 circle.set_radius(radius)
                 circle.set_alpha(1 * fade)
-                if expansion_progress > 0.5:
-                    circle.set_facecolor('yellow')
-                elif expansion_progress > 0.2:
-                    circle.set_facecolor('orange')
+                # Removed color override here → layers keep their original self.zone_colors
             brightness = max(1.2 * np.exp(-(frame - self.explosion_time) / 40), 0.05) * peak_scale
 
         info = f"{phase}\nFrame: {frame}/{130}\nLayers: {self.num_layers}\nBrightness: {brightness:.3f}"
@@ -187,7 +184,7 @@ with col2:
             sim.update_layers(frame)
             placeholder.pyplot(sim.fig, use_container_width=True)
             progress_bar.progress(frame / total_frames)
-            time.sleep(0.05)  # fixed speed
+            time.sleep(0.05)  # faster speed
         
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
@@ -199,4 +196,3 @@ st.markdown("""
 - Each colored layer represents different stellar material zones
 - The light curve shows how brightness changes over time during the explosion
 """)
-

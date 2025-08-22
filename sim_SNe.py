@@ -7,14 +7,14 @@ import time
 # ------------------------
 # Config / defaults
 # ------------------------
-TOTAL_FRAMES = 130
+TOTAL_FRAMES = 300
 DT_DAYS = 0.5              # "sim days" per frame (visual scale)
 EXPLOSION_FRAME = 50       # frame when expansion begins
-PLATEAU_DAYS = 80.0        # plateau duration in days
+PLATEAU_DAYS = TOTAL_FRAMES * DT_DAYS * 0.8   # plateau duration in days
 TAIL_TAU = 111.3           # Co decay timescale (days)
 NI_SCALE = 0.6             # scales tail brightness (proxy for M_Ni)
 ANIMATION_SPEED = 0.02     # seconds per frame (fixed)
-skip = 30
+skip = 4
 class ZoneLayerSupernova:
     """
     
@@ -224,6 +224,7 @@ with col2:
 
         progress_bar.progress(1.0)
         st.success("🎉 Simulation Complete! The star has gone supernova.")
+
 
 
 
